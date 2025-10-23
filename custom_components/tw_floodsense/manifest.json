@@ -1,0 +1,21 @@
+{
+  "codeowners": [
+    "@kukuxx"
+  ],
+  "domain": "tw_floodsense",
+  "name": "Taiwan FloodSense",
+  "version": "1.0.0",
+  "homeassistant": "2025.10.0",
+  "documentation": "https://github.com/kukuxx/HA-TWFloodSense",
+  "issue_tracker": "https://github.com/kukuxx/HA-TWFloodSense/issues",
+  "requirements": [
+    "httpx"
+  ],
+  "dependencies": [],
+  "integration_type": "service",
+  "loggers": [
+    "custom_components.tw_floodsense"
+  ],
+  "config_flow": true,
+  "iot_class": "cloud_polling"
+}

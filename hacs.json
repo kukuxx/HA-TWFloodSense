@@ -1,0 +1,7 @@
+{
+    "name": "HA-TWFloodSense",
+    "render_readme": true,
+    "documentation": "https://github.com/kukuxx/HA-TWFloodSense",
+    "issue_tracker": "https://github.com/kukuxx/HA-TWFloodSense/issues",
+    "homeassistant": "2025.10.0"
+}

@@ -1,0 +1,59 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configure TWFloodSense",
+                "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor Code and Name and enter them.",
+                "data": {
+                    "station_code": "Station Code",
+                    "station_name": "Station Name"
+                }
+            }
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single configuration is allowed.",
+            "already_configured": "This FloodSense Sensor is already configured."
+        },
+        "error": {
+            "no_station_code": "Please enter Station Code",
+            "no_station_name": "Please enter Station Name",
+            "station_not_found": "Cannot find sensor with this Station Code",
+            "cannot_connect": "Cannot connect to API",
+            "unknown": "Unknown error"
+        }
+    },
+    "config_subentries": {
+        "floodsense": {
+            "initiate_flow": {
+                "user": "Add FloodSense Sensor",
+                "reconfigure": "Reconfigure FloodSense Sensor"
+            },
+            "entry_type": "FloodSense Sensor",
+            "step": {
+                "floodsense": {
+                    "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor Code and Name and enter them.",
+                    "data": {
+                        "station_code": "Station Code",
+                        "station_name": "Station Name"
+                    }
+                },
+                "reconfigure": {
+                    "description": "Modify an existing FloodSense Sensor.",
+                    "data": {
+                        "station_code": "Station Code"
+                    }
+                }
+            },
+            "error": {
+                "no_station_code": "Please enter Station Code",
+                "no_station_name": "Please enter Station Name",
+                "station_not_found": "Cannot find sensor with this Station Code",
+                "cannot_connect": "Cannot connect to API",
+                "unknown": "Unknown error"
+            },
+            "abort": {
+                "already_configured": "This FloodSense Sensor is already configured."
+            }
+        }
+    }
+}

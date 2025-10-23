@@ -1,0 +1,59 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "配置 TWFloodSense",
+                "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼和名稱並輸入。",
+                "data": {
+                    "station_code": "Station Code",
+                    "station_name": "Station Name"
+                }
+            }
+        },
+        "abort": {
+            "single_instance_allowed": "只允許單一配置",
+            "already_configured": "此淹水感測器已經配置過了"
+        },
+        "error": {
+            "no_station_code": "請輸入 Station Code",
+            "no_station_name": "請輸入 Station Name",
+            "station_not_found": "找不到此 Station Code 的感測器",
+            "cannot_connect": "無法連接到 API",
+            "unknown": "未知錯誤"
+        }
+    },
+    "config_subentries": {
+        "floodsense": {
+            "initiate_flow": {
+                "user": "新增淹水感測器",
+                "reconfigure": "重新配置淹水感測器"
+            },
+            "entry_type": "淹水感測器",
+            "step": {
+                "floodsense": {
+                    "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼和名稱並輸入。",
+                    "data": {
+                        "station_code": "Station Code",
+                        "station_name": "Station Name"
+                    }
+                },
+                "reconfigure": {
+                    "description": "修改現有的淹水感測器。",
+                    "data": {
+                        "station_code": "Station Code"
+                    }
+                }
+            },
+            "error": {
+                "no_station_code": "請輸入 Station Code",
+                "no_station_name": "請輸入 Station Name",
+                "station_not_found": "找不到此 Station Code 的感測器",
+                "cannot_connect": "無法連接到 API",
+                "unknown": "未知錯誤"
+            },
+            "abort": {
+                "already_configured": "此淹水感測器已經配置過了"
+            }
+        }
+    }
+}
