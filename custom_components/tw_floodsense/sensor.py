@@ -27,7 +27,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
             subentry_entities = []
 
-            # 處理標準監測站 subentry
+            # 處理 flood sense subentry
             if subentry.subentry_type == "floodsense":
                 station_code = subentry.data.get(CONF_STATION_CODE)
                 station_name = subentry.data.get(CONF_STATION_NAME)
@@ -182,8 +182,11 @@ class BaseSensor(CoordinatorEntity, RestoreSensor):
             return False
 
         if self._station_code not in self.coordinator_data:
-            _LOGGER.warning(
-                "The station '%s' is not in the data: %s",
+            _LOGGER.error(
+                "The station '%s' is not in the data.\n"
+                "Please confirm whether the configuration is correct,\n"
+                "then delete the subentry and re-add it.\n"
+                "Available stations: %s",
                 self._station_code,
                 list(self.coordinator_data.keys()),
             )
@@ -228,7 +231,7 @@ class FloodSenseSensor(BaseSensor):
         display_precision=None,
         icon=None,
     ):
-        """Initialize the Micro sensor."""
+        """Initialize the FloodSense sensor."""
         super().__init__(
             coordinator,
             station_code,
@@ -245,7 +248,7 @@ class FloodSenseSensor(BaseSensor):
         self._station_name = station_name
 
         _LOGGER.debug(
-            "Initialized MicroSensor for station_id: %s, type: %s",
+            "Initialized FloodSenseSensor for station_id: %s, type: %s",
             self._station_code,
             self._sensor_type,
         )

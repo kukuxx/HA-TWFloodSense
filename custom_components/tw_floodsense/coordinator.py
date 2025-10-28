@@ -20,7 +20,7 @@ from homeassistant.util.dt import as_local, parse_datetime
 from .const import (
     DOMAIN,
     HA_USER_AGENT,
-    API_THING_PARAMS,
+    API_FILTER_PARAMS,
     STATION_DATA_API_URL,
 )
 from .exceptions import (
@@ -148,7 +148,7 @@ class baseCoordinator(DataUpdateCoordinator, ABC):
 class FloodSenseCoordinator(baseCoordinator):
     """Class to manage fetching data from the flood sense API."""
 
-    def __init__(self, hass, station_codes, thing_ids):
+    def __init__(self, hass, station_codes, station_ids):
         super().__init__(
             hass,
             name=f"{DOMAIN}_floodsense",
@@ -156,20 +156,22 @@ class FloodSenseCoordinator(baseCoordinator):
         )
 
         self.station_codes = station_codes
-        self.thing_ids = thing_ids
+        self.station_ids = station_ids
 
     async def _get_data(self):
         """Fetch the micro sensor data from the API."""
-        filter_codes = " or ".join(
-            API_THING_PARAMS.format(thing_id=int(thing_id)) 
-            for thing_id in self.thing_ids
+        filter_params = " or ".join(
+            API_FILTER_PARAMS.format(stationID=stationID) 
+            for stationID in self.station_ids
         )
 
-        url = STATION_DATA_API_URL.format(filter_codes=filter_codes)
+        url = STATION_DATA_API_URL.format(filter_params=filter_params)
         headers = {
             "Accept": "application/json",
             "User-Agent": HA_USER_AGENT,
         }
+
+        _LOGGER.debug("Flood sense Station Data API URL: %s", url)
 
         err = {"name": "TWFloodSense",}
 
@@ -209,6 +211,8 @@ class FloodSenseCoordinator(baseCoordinator):
 
     def _parse_data(self, res_data):
         """Parse flood sense data and extract sensor values."""
+        _LOGGER.debug("Flood sense API response: %s", res_data)
+
         try:
             if (res_data.get("@iot.count", 0) == 0 
             or not (value := res_data.get("value"))):
@@ -216,29 +220,41 @@ class FloodSenseCoordinator(baseCoordinator):
             
             result = {}
             for data in value:
-                if data["@iot.id"] in self.thing_ids:
-                    station_code = data["properties"].get("stationCode")
-
+                thing_data = data["Thing"]["properties"]
+                if (station_code := thing_data.get("stationCode")) in self.station_codes:
+                    
                     result[station_code] = {
-                        "thing_id": data["@iot.id"],
-                        "stationID": data["properties"].get("stationID"),
-                        "stationCode": data["properties"].get("stationCode"),
-                        "stationName": data["properties"].get("stationName"),
-                        "authority_type": data["properties"].get("authority_type"),
+                        "thing_id": data["Thing"]["@iot.id"],
+                        "stationID": thing_data.get("stationID"),
+                        "stationCode": thing_data.get("stationCode"),
+                        "stationName": thing_data.get("stationName"),
+                        "authority_type": thing_data.get("authority_type"),
                     }
 
-                    Datastreams = data["Datastreams"][0]
-                    coordinates = Datastreams["observedArea"].get("coordinates")
-                    if coordinates:
-                        coords = self._parse_coordinates(coordinates)
-                        result[station_code]["latitude"] = coords["lat"]
-                        result[station_code]["longitude"] = coords["lon"]
+                    
+                    coordinates = data["observedArea"].get("coordinates")
+                    coords = self._parse_coordinates(coordinates)
+                    result[station_code]["latitude"] = coords["lat"]
+                    result[station_code]["longitude"] = coords["lon"]
 
-                    observations = Datastreams["Observations"][0]
+                    observations = data["Observations"]
                     if observations:
-                        result[station_code]["water_level"] = observations.get("result")
+                        result[station_code]["water_level"] = observations[0].get("result")
                         result[station_code]["update_time"] = self._parse_datetime(
-                            observations.get("phenomenonTime")
+                            observations[0].get("phenomenonTime")
+                        )
+                    else:
+                        result_data = {
+                            "water_level": "",
+                            "update_time": "unknown",
+                        }
+                        
+                        result[station_code].update(result_data)
+
+                        _LOGGER.warning(
+                            "No Observations found for station %s. "
+                            "Skipping...",
+                            station_code,
                         )
 
             return result
@@ -249,6 +265,9 @@ class FloodSenseCoordinator(baseCoordinator):
 
     def _parse_coordinates(self, coords):
         """Parse coordinates and determine latitude and longitude."""
+        if not coords:
+            return {"lat": "unknown", "lon": "unknown"}
+
         lat_range = (10.36, 26.40)  # 緯度範圍
         lon_range = (114.35, 122.11)  # 經度範圍
 

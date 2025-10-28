@@ -3,10 +3,11 @@
         "step": {
             "user": {
                 "title": "Configure TWFloodSense",
-                "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor Code and Name and enter them.",
+                "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor CODE, NAME and ID and enter them.",
                 "data": {
-                    "station_code": "Station Code",
-                    "station_name": "Station Name"
+                    "station_name": "Station Name",
+                    "station_id": "Station ID",
+                    "station_code": "Station Code"
                 }
             }
         },
@@ -17,6 +18,7 @@
         "error": {
             "no_station_code": "Please enter Station Code",
             "no_station_name": "Please enter Station Name",
+            "no_station_id": "Please enter Station ID",
             "station_not_found": "Cannot find sensor with this Station Code",
             "cannot_connect": "Cannot connect to API",
             "unknown": "Unknown error"
@@ -31,15 +33,18 @@
             "entry_type": "FloodSense Sensor",
             "step": {
                 "floodsense": {
-                    "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor Code and Name and enter them.",
+                    "description": "Please go to https://kukuxx.github.io/TW-FloodMap to find the sensor CODE, NAME and ID and enter them.",
                     "data": {
-                        "station_code": "Station Code",
-                        "station_name": "Station Name"
+                        "station_name": "Station Name",
+                        "station_id": "Station ID",
+                        "station_code": "Station Code"
                     }
                 },
                 "reconfigure": {
                     "description": "Modify an existing FloodSense Sensor.",
                     "data": {
+                        "station_name": "Station Name",
+                        "station_id": "Station ID",
                         "station_code": "Station Code"
                     }
                 }
@@ -47,6 +52,7 @@
             "error": {
                 "no_station_code": "Please enter Station Code",
                 "no_station_name": "Please enter Station Name",
+                "no_station_id": "Please enter Station ID",
                 "station_not_found": "Cannot find sensor with this Station Code",
                 "cannot_connect": "Cannot connect to API",
                 "unknown": "Unknown error"

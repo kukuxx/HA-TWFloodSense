@@ -3,15 +3,20 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers import config_validation as cv
 
 from .coordinator import FloodSenseCoordinator
 from .const import (
-    DOMAIN,
+    CONF_STATION_NAME,
     CONF_STATION_CODE,
+    CONF_STATION_ID,
     CONF_THING_ID,
+    DOMAIN,
     FLOODSENSE_COORDINATOR,
+    HA_USER_AGENT,
+    THING_DATA_API_URL,
     PLATFORM,
 )
 
@@ -26,14 +31,16 @@ def _get_floodsense_from_entry(entry: ConfigEntry) -> dict[str, Any]:
         return {}
 
     station_codes = [
-        subentry.data.get(CONF_STATION_CODE) 
-        for subentry in entry.subentries.values() if subentry.data
+        subentry.data[CONF_STATION_CODE]
+        for subentry in entry.subentries.values() 
+        if subentry.data and subentry.data.get(CONF_STATION_CODE)
     ]
-    thing_ids = [
-        subentry.data.get(CONF_THING_ID) 
-        for subentry in entry.subentries.values() if subentry.data
+    station_ids = [
+        subentry.data[CONF_STATION_ID]
+        for subentry in entry.subentries.values() 
+        if subentry.data and subentry.data.get(CONF_STATION_ID)
     ]
-    return station_codes, thing_ids
+    return station_codes, station_ids
 
 
 async def _async_setup_subentries(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -43,11 +50,11 @@ async def _async_setup_subentries(hass: HomeAssistant, entry: ConfigEntry) -> bo
     """
     config_data = hass.data[DOMAIN][entry.entry_id]
 
-    station_codes, thing_ids = _get_floodsense_from_entry(entry)
+    station_codes, station_ids = _get_floodsense_from_entry(entry)
 
     # 創建 coordinators
-    if station_codes and thing_ids:
-        floodsense_coordinator = FloodSenseCoordinator(hass, station_codes, thing_ids)
+    if station_codes and station_ids:
+        floodsense_coordinator = FloodSenseCoordinator(hass, station_codes, station_ids)
         # 初始刷新
         await floodsense_coordinator.async_config_entry_first_refresh()
         config_data[FLOODSENSE_COORDINATOR] = floodsense_coordinator
@@ -137,5 +144,46 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry.version > 2:
         _LOGGER.error("Cannot migrate from future version")
         return False
+    
+    try:
+        if entry.version == 1:
+            from copy import deepcopy
+            
+            for subentry in entry.subentries.values():
+                new_data = deepcopy(dict(subentry.data))
+                new_data.pop(CONF_THING_ID, None)
 
-    return True
+                station_id = await _get_station_id(hass, new_data[CONF_STATION_CODE])
+                new_data[CONF_STATION_ID] = station_id
+                hass.config_entries.async_update_subentry(
+                    entry,
+                    subentry, 
+                    data=new_data,
+                    title=f"{new_data[CONF_STATION_NAME]}({new_data[CONF_STATION_CODE]})",
+                    unique_id=new_data[CONF_STATION_CODE],
+                )
+                _LOGGER.debug(
+                    "Migrated subentry %s to version 2",
+                    subentry.subentry_id,
+                )
+            return True
+    except Exception as e:
+        _LOGGER.error("Migration error: %s", e)
+        return False
+                    
+
+async def _get_station_id(hass: HomeAssistant, station_code: str) -> str:
+    """Get station ID from station code."""
+    client = get_async_client(hass, False)
+    url = THING_DATA_API_URL.format(station_code=station_code)
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": HA_USER_AGENT,
+    }
+            
+    response = await client.get(url, headers=headers, timeout=10)
+    if response.is_success:
+        res_data = response.json()
+        if res_data.get("@iot.count", 0) > 0:
+            return res_data["value"][0]["properties"].get("stationID")
+    return None

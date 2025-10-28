@@ -3,10 +3,11 @@
         "step": {
             "user": {
                 "title": "配置 TWFloodSense",
-                "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼和名稱並輸入。",
+                "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼、名稱和ID並輸入。",
                 "data": {
-                    "station_code": "Station Code",
-                    "station_name": "Station Name"
+                    "station_name": "測站名稱",
+                    "station_id": "測站ID",
+                    "station_code": "測站代碼"
                 }
             }
         },
@@ -17,6 +18,7 @@
         "error": {
             "no_station_code": "請輸入 Station Code",
             "no_station_name": "請輸入 Station Name",
+            "no_station_id": "請輸入 Station ID",
             "station_not_found": "找不到此 Station Code 的感測器",
             "cannot_connect": "無法連接到 API",
             "unknown": "未知錯誤"
@@ -31,22 +33,26 @@
             "entry_type": "淹水感測器",
             "step": {
                 "floodsense": {
-                    "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼和名稱並輸入。",
+                    "description": "請到 https://kukuxx.github.io/TW-FloodMap 查詢感測器代碼、名稱和ID並輸入。",
                     "data": {
-                        "station_code": "Station Code",
-                        "station_name": "Station Name"
+                        "station_name": "測站名稱",
+                        "station_id": "測站ID",
+                        "station_code": "測站代碼"
                     }
                 },
                 "reconfigure": {
                     "description": "修改現有的淹水感測器。",
                     "data": {
-                        "station_code": "Station Code"
+                        "station_name": "測站名稱",
+                        "station_id": "測站ID",
+                        "station_code": "測站代碼"
                     }
                 }
             },
             "error": {
                 "no_station_code": "請輸入 Station Code",
                 "no_station_name": "請輸入 Station Name",
+                "no_station_id": "請輸入 Station ID",
                 "station_not_found": "找不到此 Station Code 的感測器",
                 "cannot_connect": "無法連接到 API",
                 "unknown": "未知錯誤"

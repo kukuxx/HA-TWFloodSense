@@ -29,7 +29,7 @@
 
 ## 📋 概述
 
-此整合提供台灣各地即時淹水深度監測功能。資料來源為[民生公共物聯網資料服務平台](https://sta.ci.taiwan.gov.tw/)。
+此整合提供台灣各地即時淹水深度監測功能。資料來源為[民生公共物聯網資料服務平台](https://ci.taiwan.gov.tw/dsp/)。
 
 > [!NOTE]
 > **無需 API Key**:此整合使用公開資料,不需要申請 API Key。
@@ -151,7 +151,7 @@ logger:
 
 ## 🙏 致謝
 
-- 資料由[民生公共物聯網資料服務平台](https://sta.ci.taiwan.gov.tw/)提供
+- 資料由[民生公共物聯網資料服務平台](https://ci.taiwan.gov.tw/dsp/)提供
 ---
 
 ## 📞 支援

@@ -29,7 +29,7 @@
 
 ## 📋 Overview
 
-This integration provides real-time flood water level monitoring across Taiwan. Data is sourced from the [Water Resources Dataset of Civil IoT Taiwan](https://sta.ci.taiwan.gov.tw/).
+This integration provides real-time flood water level monitoring across Taiwan. Data is sourced from the [Water Resources Dataset of Civil IoT Taiwan](https://ci.taiwan.gov.tw/dsp/).
 
 > [!NOTE]
 > **No API Key Required**: This integration uses public data and does not require an API key.
@@ -151,7 +151,7 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 
 ## 🙏 Credits
 
-- Data provided by [Water Resources Dataset of Civil IoT Taiwan](https://sta.ci.taiwan.gov.tw/)
+- Data provided by [Water Resources Dataset of Civil IoT Taiwan](https://ci.taiwan.gov.tw/dsp/)
 
 ---
 
